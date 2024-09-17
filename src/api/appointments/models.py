@@ -8,10 +8,11 @@ class Appointment(models.Model):
     scheduled_at = models.DateTimeField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    is_completed= models.BooleanField(default=False)
     class Meta:
         unique_together = ('doctor','scheduled_at')
         verbose_name = 'Appointment'
         verbose_name_plural = 'Appointments'
 
     def __str__(self):
-        return f"Appointment for {self.patient.name} with Dr. {self.doctor.name} on {self.scheduled_at}"
+        return f"Appointment for {self.patient.get_full_name()} with Dr. {self.doctor.get_full_name()} on {self.scheduled_at}"
