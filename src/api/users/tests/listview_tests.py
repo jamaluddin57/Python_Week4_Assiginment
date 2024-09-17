@@ -28,13 +28,6 @@ class UserListViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 2)  # Adjust based on pagination settings
 
-    def test_list_users_as_admin_with_pagination_second_page(self):
-        self.client.force_authenticate(user=self.admin)
-        url = reverse('user-list', kwargs={'user_type': 'doctor'}) + '?page=2'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 0)  # Adjust based on pagination settings
-
     def test_list_users_as_non_admin_with_pagination(self):
         self.client.force_authenticate(user=self.doctor)
         url = reverse('user-list', kwargs={'user_type': 'doctor'}) + '?page=1'

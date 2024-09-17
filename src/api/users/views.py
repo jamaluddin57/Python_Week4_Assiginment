@@ -4,6 +4,7 @@ from .models import User
 from .serializers import UserSerializer
 from .permissions import IsOwnerOrAdmin
 from rest_framework import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 class UserListView(generics.ListAPIView):
     """
@@ -18,6 +19,8 @@ class UserListView(generics.ListAPIView):
         Override the get_queryset method to filter users by role.
         """
         user_type = self.kwargs['user_type'].lower()
+        if user_type not in [User.DOCTOR,User.PATIENT,User.ADMIN]:
+            raise ObjectDoesNotExist("Role not found")
         return User.objects.filter(role=user_type)
 
 
