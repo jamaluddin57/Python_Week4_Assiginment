@@ -18,7 +18,7 @@ from django.contrib import admin
 from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView, SpectacularRedocView
 from django.urls import path, include
 from rest_framework import permissions
-
+from .settings import DEBUG
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('api.users.urls')),
@@ -28,3 +28,8 @@ urlpatterns = [
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('api-auth/', include('rest_framework.urls')),
 ]
+if DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

@@ -39,21 +39,21 @@ class AppointmentListViewTests(APITestCase):
         url = reverse('appointment-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_list_appointments_as_doctor(self):
         self.client.force_authenticate(user=self.doctor)
         url = reverse('appointment-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_list_appointments_as_patient(self):
         self.client.force_authenticate(user=self.patient)
         url = reverse('appointment-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_list_appointments_unauthenticated(self):
         url = reverse('appointment-list')
@@ -65,21 +65,22 @@ class AppointmentListViewTests(APITestCase):
         url = reverse('appointment-list') + '?is_completed=True'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
+
     
     def test_list_appointments_with_filter_as_doctor(self):
         self.client.force_authenticate(user=self.doctor)
         url = reverse('appointment-list') + '?is_completed=True'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
     
     def test_list_appointments_with_filter_as_patient(self):
         self.client.force_authenticate(user=self.patient)
         url = reverse('appointment-list') + '?is_completed=True'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
 
 class AppointmentDetailViewTests(APITestCase):
@@ -192,8 +193,8 @@ class AppointmentReportViewTests(APITestCase):
         url = reverse('appointment-report')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('count', response.data[0])
-        self.assertIn('date', response.data[0])
+        self.assertIn('count', response.data["results"][0])
+        self.assertIn('date', response.data["results"][0])
 
     def test_report_view_as_non_superuser(self):
         self.client.force_authenticate(user=self.doctor)
