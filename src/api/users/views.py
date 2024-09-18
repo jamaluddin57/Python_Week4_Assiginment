@@ -36,7 +36,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         """
         Override the get_object method to return the user based on the user_type.
         """
-        user_type = self.kwargs['user_type'].lower()
+        user_type = self.kwargs['user_type']
         return User.objects.get(id=self.kwargs['id'], role=user_type)
     
     def get_queryset(self):

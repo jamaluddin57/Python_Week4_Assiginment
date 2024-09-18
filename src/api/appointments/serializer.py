@@ -3,6 +3,7 @@ from .models import Appointment
 from rest_framework.reverse import reverse
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -54,6 +55,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         """
         Create a new Appointment instance.
         """
+        cache.delete_pattern('appointment:*')  # Clear the cache
         return super().create(validated_data)
 
     @transaction.atomic
@@ -61,7 +63,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
         """
         Update an existing Appointment instance.
         """
+        cache.delete_pattern('appointment:*')  # Clear the cache
         return super().update(instance, validated_data)
+        
 
 class AppointmentReportSerializer(serializers.Serializer):
     """

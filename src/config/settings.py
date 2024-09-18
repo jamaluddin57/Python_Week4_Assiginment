@@ -146,6 +146,12 @@ REST_FRAMEWORK = {
      'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 5
 }
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+}
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'HMS',
@@ -156,3 +162,16 @@ SPECTACULAR_SETTINGS = {
 
 
 LOGOUT_URL='rest_framework:logout'
+
+
+# Redis Cache Configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis-18177.c305.ap-south-1-1.ec2.redns.redis-cloud.com:18177",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "d9vjT3VUipvEHrOGfbSvYyc9z2OKAU97",
+        },
+    }
+}
