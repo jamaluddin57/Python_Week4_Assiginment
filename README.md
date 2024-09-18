@@ -17,8 +17,8 @@ This is a Django-based Hospital Management System API that manages appointments,
 
 ## Requirements
 
-- Python 3.x
-- Django 4.x
+- Python 3.10+
+- Django 5.1
 - Django REST Framework
 - Django Debug Toolbar
 
