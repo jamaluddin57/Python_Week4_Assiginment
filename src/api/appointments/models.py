@@ -13,6 +13,10 @@ class Appointment(models.Model):
         unique_together = ('doctor','scheduled_at')
         verbose_name = 'Appointment'
         verbose_name_plural = 'Appointments'
+        indexes = [
+            models.Index(fields=['doctor']),
+            models.Index(fields=['patient']),
+        ]
 
     def __str__(self):
         return f"Appointment for {self.patient.get_full_name()} with Dr. {self.doctor.get_full_name()} on {self.scheduled_at}"

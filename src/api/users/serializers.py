@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -28,19 +29,35 @@ class UserSerializer(serializers.ModelSerializer):
                 # If the user is not a doctor, remove the specialization field
                 self.fields.pop('specialization', None)
 
-    def validate_email(self, value):
-        if not self.instance and User.objects.filter(email=value).exists():
-            raise ValidationError('Email is already taken.')
-        if self.instance and User.objects.filter(email=value).exclude(id=self.instance.id).exists():
-            raise ValidationError('Email is already taken.')
-        return value
+    def validate(self, data):
+        """
+        Perform bulk validation for both email and username to avoid duplicate queries.
+        """
+        email = data.get('email', None)
+        username = data.get('username', None)
+        user_id = self.instance.id if self.instance else None
 
-    def validate_username(self, value):
-        if not self.instance and User.objects.filter(username=value).exists():
-            raise ValidationError('Username is already taken.')
-        if self.instance and User.objects.filter(username=value).exclude(id=self.instance.id).exists():
-            raise ValidationError('Username is already taken.')
-        return value
+        # If both email and username are provided, perform a bulk query
+        if email or username:
+            # Construct a query to check if either email or username already exists (excluding the current instance)
+            filters = Q()
+            if email:
+                filters |= Q(email=email)
+            if username:
+                filters |= Q(username=username)
+            
+            # Exclude the current instance when updating
+            if user_id:
+                filters &= ~Q(id=user_id)
+
+            # Check if any other user exists with the same email or username
+            if User.objects.filter(filters).exists():
+                if email and User.objects.filter(email=email).exclude(id=user_id).exists():
+                    raise ValidationError({'email': 'Email is already taken.'})
+                if username and User.objects.filter(username=username).exclude(id=user_id).exists():
+                    raise ValidationError({'username': 'Username is already taken.'})
+
+        return data
 
     @transaction.atomic
     def create(self, validated_data):
@@ -54,5 +71,5 @@ class UserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         if password:
             instance.set_password(password)
-
+        
         return super().update(instance, validated_data)

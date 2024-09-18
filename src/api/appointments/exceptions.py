@@ -58,7 +58,7 @@ def custom_exception_handler(exc, context):
         )
     elif isinstance(exc, TypeError):
         return Response(
-            {"detail": "A type error occurred. Please check your data."},
+            {"detail": f"A type error occurred. Please check your data.{TypeError}"},
             status=status.HTTP_400_BAD_REQUEST
         )
     elif isinstance(exc, APIException):

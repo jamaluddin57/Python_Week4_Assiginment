@@ -37,13 +37,21 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         Override the get_object method to return the user based on the user_type.
         """
         user_type = self.kwargs['user_type']
-        return User.objects.get(id=self.kwargs['id'], role=user_type)
+        user= User.objects.get(id=self.kwargs['id'], role=user_type)
+        if(user is None):
+            raise ObjectDoesNotExist("User not found")
+        return user
+    
+    def get_serializer(self, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().get_serializer(*args, **kwargs)
     
     def get_queryset(self):
         """
         Override the get_queryset method to filter users by role.
         """
         return User.objects.filter(role=self.kwargs['user_type'].lower())
+    
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
@@ -63,6 +71,5 @@ class RegisterView(generics.CreateAPIView):
         user_type = self.kwargs.get('user_type').lower()  # Get user_type from the URL
         if user_type not in [User.DOCTOR, User.PATIENT]:
             raise serializers.ValidationError("Invalid user type provided.")
-        
         # Set the role based on the user_type in the URL
         serializer.save(role=user_type)
