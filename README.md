@@ -1,4 +1,4 @@
-# Hospital Management System
+# HeathSync
 
 This is a Django-based Hospital Management System API that manages appointments, user registrations, and roles (doctor, patient, etc.). The project includes custom user management, role-based views, appointment scheduling, and Swagger for Api documentation.
 
@@ -74,16 +74,6 @@ List/Create Appointments: appointments/
 Retrieve/Update/Delete Appointments: appointments/<id>/
 Filter Appointments by doctor, date, or status
 
-### Running Tests
-To run the test suite:
-
-```bash
-python manage.py test api.users.tests.registerview_tests
-python manage.py test api.users.tests.listview_tests
-python manage.py test api.users.tests.detailview_tests
-python manage.py test api.appointments.test
-```
-This project includes unit tests for user registration, role management, and appointment scheduling.
 
 ### Documentation
 To view the api documentation run the project and view 127.0.0.1/redoc
